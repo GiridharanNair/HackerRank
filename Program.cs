@@ -15,9 +15,7 @@ namespace ConsoleApplication1
             if (adjCharArray.Length <= 0)
                 Console.WriteLine("Empty String");
             else
-            {   
-                Console.WriteLine(adjCharArray);
-            }            
+                Console.WriteLine(adjCharArray);         
         }
 
         /// <summary>
@@ -26,7 +24,7 @@ namespace ConsoleApplication1
         /// <param name="adjString"></param>
         /// <param name="adjCharArray"></param>
         /// <returns></returns>
-        private static string ReadData(string adjString, out char[] adjCharArray)
+        private static void ReadData(string adjString, out char[] adjCharArray)
         {
             adjCharArray = adjString.ToCharArray();
             for (int i = 0; i < adjCharArray.Length - 1; i++)
@@ -40,7 +38,6 @@ namespace ConsoleApplication1
                 if (!c.Equals(default(char)))
                     adjString += c;
             }
-            return adjString;
         }
         /// <summary>
         /// Delete an existing adjascent match and redo to see if the next instances also matches
@@ -50,16 +47,15 @@ namespace ConsoleApplication1
         private static void Delete(int v1, ref char[] adjCharArray)
         {
             string data = String.Empty;
-            //Console.WriteLine(adjCharArray[v1]+ " "+adjCharArray[v1+1]);
             adjCharArray[v1] = default(char);
             adjCharArray[v1+1]= default(char);
-            
+            //Removing the empty characters and send the formatted string for reading again            
             foreach (char c in adjCharArray)
             {
                 if (!c.Equals(default(char)))
                     data += c;
             }
-
+            //Read Again to see if there is another match from the same instance
             ReadData(data, out adjCharArray);
         }
 
