@@ -1,112 +1,77 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-
+using System.Text.RegularExpressions;
 
 namespace ConsoleApplication1
 {
     class Program
     {
-        static char[] chararray;
-        /// <summary>
-        /// Week of 24 challenge- Hello LadyBug
-        /// </summary>
-        /// <param name="args"></param>
-        static void Main(string[] args)
-        {
-            
-            int Q = Convert.ToInt32(Console.ReadLine());
-            for (int a0 = 0; a0 < Q; a0++)
-            {
-                int n = Convert.ToInt32(Console.ReadLine());
-                string b = Console.ReadLine();
-                bool result = SatisfyLady(n, b);
-                foreach (char c in chararray)
-                {
-                    Console.Write(c);
-                }                
-            }         
-        }
-        /// <summary>
-        /// Checks for the movement is possible or not
-        /// </summary>
-        /// <param name="length"></param>
-        /// <param name="word"></param>
-        /// <returns>oolean value</returns>
-        static bool SatisfyLady(int length, string word)
-        {
-            chararray = word.ToCharArray();
-            int count = 0;
-            for(int i=0;i< chararray.Length-1; i++)
-            {
-                if (chararray[i].Equals('_'))
-                {
-                    count += 1;
-                    swapunderscores(ref chararray[i], ref chararray[i+1], i);
-                }
-                if (word.Count(x => x == chararray[i]) <= 1)
-                {
-                    Console.WriteLine("Not a Happy Bug");
-                }
-                
-            }
-            if (count == 0)
-            {
-                int counterLength = 0;
-                for(int k=0;k< chararray.Length-1; k++)
-                {
-                    if (chararray[k].Equals(chararray[k + 1]))
-                    {
-                        counterLength += 1;                             
-                    }
-                    else if (counterLength > 0)
-                    {
-                        Console.WriteLine(chararray[k] + " is a happy bug, I will check others");
-                        counterLength = 0;
-                    }
-                    else { 
-                        Console.WriteLine("No Happy Bug");
-                        return false;
-                    }
 
+        private static int SubStringsRequired(Dictionary<char, int> items, int noofCharacters, string word)
+        {
+            int finalCount = 0;
+            foreach (char keys in items.Keys)
+            {
+                int requiredCharacters = noofCharacters / 4;
+                if (items[keys] > requiredCharacters)
+                {
+                    int count = items[keys] - requiredCharacters;
+                    string longestRun = new string(word.Select((c, index) => word.Substring(index).TakeWhile(e => e == c))
+                                    .OrderByDescending(e => e.Count())
+                                    .First().ToArray());
+                    int longCount = longestRun.Length;
+                    if (longCount < count)
+                    {
+                        finalCount += count+ (count-longCount);
+                    }
+                    else
+                    finalCount += count;
                 }
-               
             }
+            return finalCount;
+        }
+
+        static void Main(String[] args)
+        {
+            int noofCharacters = Convert.ToInt32(Console.ReadLine());
+            if(noofCharacters>=4 && noofCharacters%4==0 && noofCharacters<=2000)
+            {
+                string enteredWord = Console.ReadLine();
+                Regex check = new Regex("^[actgACTG]+$");
+                if (check.IsMatch(enteredWord))
+                {
+                    //int count=0;
+                     Dictionary<char, int> items = new Dictionary<char,int>();
+                    items.Add('A', 0);
+                    items.Add('C', 0);
+                    items.Add('G', 0);
+                    items.Add('T', 0);
+                    foreach (char c in enteredWord)
+                    {
+                       int count = items[c];
+                       items[c] = ++count;
+                    }
+                    int noOfSubstrings = SubStringsRequired(items, noofCharacters,enteredWord);
+                    Console.WriteLine(noOfSubstrings);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Input");
+                }
+            }
+            else
+                Console.WriteLine("Number of characters should be n/4 times and minimum of 4 characters");
+
+            Console.ReadLine();
 
             
-            return true;
         }
 
-        /// <summary>
-        /// Swaps underscores with the next item and swaps that item with the matching item.
-        /// </summary>
-        /// <param name="itemIndex"></param>
-        /// <param name="nextItemIndex"></param>
-        /// <param name="indexOfUnderScore"></param>
-        static void swapunderscores(ref char itemIndex, ref char nextItemIndex, int indexOfUnderScore)
-        {
-            char temp= itemIndex;
-            itemIndex=nextItemIndex;
-            nextItemIndex =temp;
-            swapletters(ref itemIndex, indexOfUnderScore);
-        }
-        /// <summary>
-        /// Swaps the color item on the board to the matching color item if it exists.
-        /// </summary>
-        /// <param name="itemIndex"></param>
-        /// <param name="index"></param>
-        private static void swapletters(ref char itemIndex, int index)
-        {
-            for(int j = 0; j < index; j++)
-            {
-                if (chararray[j].Equals(itemIndex))
-                {
-                    char temp = chararray[j+1];
-                    chararray[j + 1]= itemIndex;
-                    chararray[index] = temp;    
-                            
-                }
-            }
-        }
         
+
+       
     }
+    
 }
