@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,8 +26,12 @@ namespace ConsoleApplication1
             {
                 addItems.addBinaryNodes(no);
             }
-            int sum = getSumOfNodes(addItems);
-            Console.WriteLine(sum);
+            int leftsum = getSumOfNodes(addItems.left);
+
+            int rightsum = getSumOfNodes(addItems.right);
+
+            Console.WriteLine(leftsum + rightsum); 
+           
             Console.ReadLine();   
         }
 
